@@ -1,0 +1,11 @@
+{
+  "name": "spotify-utils",
+  "version": "1.0.0",
+  "description": "a CLI tool to manage the user spotify library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bruno Mello",
+  "license": "ISC"
+}
