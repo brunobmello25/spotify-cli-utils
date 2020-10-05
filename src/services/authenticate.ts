@@ -1,11 +1,12 @@
 import express from 'express'
 import SpotifyWebApi from 'spotify-web-api-node'
 import * as oauthCredentials from '../credentials/oauth.json'
+import * as scopes from '../config/scopes.json'
 
 async function authenticateWithOAuth(): Promise<void> {
   const webServer = await startWebServer()
   const OAuthClient = await createOAuthClient()
-  // await requestUserConsent()
+  await requestUserConsent(OAuthClient)
   // await waitForSpotifyCallback()
   // await requestSpotifyForAccessTokens()
   // await setGlobalSpotifyAuthentication()
@@ -30,6 +31,12 @@ async function authenticateWithOAuth(): Promise<void> {
     })
 
     return OAuthClient
+  }
+
+  async function requestUserConsent(OAuthClient: SpotifyWebApi) {
+    const authorizeUrl = OAuthClient.createAuthorizeURL(scopes, 'state')
+
+    console.log(`> Por favor, faça login: ${authorizeUrl}`)
   }
 }
 
