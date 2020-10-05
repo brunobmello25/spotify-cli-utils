@@ -1,7 +1,7 @@
 import express from 'express'
 import SpotifyWebApi from 'spotify-web-api-node'
-import * as oauthCredentials from '../credentials/oauth.json'
-import * as scopes from '../config/scopes.json'
+import oauthCredentials from '../credentials/oauth.json'
+import scopes from '../config/scopes.json'
 
 async function authenticateWithOAuth(): Promise<void> {
   const webServer = await startWebServer()
