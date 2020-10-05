@@ -7,7 +7,7 @@ async function authenticateWithOAuth(): Promise<void> {
   const webServer = await startWebServer()
   const OAuthClient = await createOAuthClient()
   await requestUserConsent(OAuthClient)
-  // await waitForSpotifyCallback()
+  const authCode = await waitForSpotifyCallback()
   // await requestSpotifyForAccessTokens()
   // await setGlobalSpotifyAuthentication()
   // await stopWebServer()
@@ -37,6 +37,21 @@ async function authenticateWithOAuth(): Promise<void> {
     const authorizeUrl = OAuthClient.createAuthorizeURL(scopes, 'state')
 
     console.log(`> Por favor, faça login: ${authorizeUrl}`)
+  }
+
+  async function waitForSpotifyCallback(): Promise<string> {
+    return new Promise((resolve) => {
+      console.log('> Aguardando autenticação...')
+
+      webServer.app.get('/oauth2callback', (req, res) => {
+        const authCode = req.query.code as string
+        console.log('> Autenticado com sucesso!\n')
+
+        res.send('<h1>Obrigado!</h1> <p>Você já pode fechar esta janela</p>')
+
+        resolve(authCode)
+      })
+    })
   }
 }
 
