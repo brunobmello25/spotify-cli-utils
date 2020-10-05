@@ -8,7 +8,7 @@ async function authenticateWithOAuth(): Promise<void> {
   const OAuthClient = await createOAuthClient()
   await requestUserConsent(OAuthClient)
   const authCode = await waitForSpotifyCallback()
-  // await requestSpotifyForAccessTokens()
+  await setAccessAndRefreshTokens(OAuthClient, authCode)
   // await setGlobalSpotifyAuthentication()
   // await stopWebServer()
 
@@ -52,6 +52,15 @@ async function authenticateWithOAuth(): Promise<void> {
         resolve(authCode)
       })
     })
+  }
+
+  async function setAccessAndRefreshTokens(OAuthClient: SpotifyWebApi, authCode: string) {
+    const authResponse = await OAuthClient.authorizationCodeGrant(authCode)
+
+    console.log('> Access token recebido\n')
+
+    OAuthClient.setAccessToken(authResponse.body.access_token)
+    OAuthClient.setRefreshToken(authResponse.body.refresh_token)
   }
 }
 
