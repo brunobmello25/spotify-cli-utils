@@ -1,18 +1,23 @@
-import express from 'express'
+import { Server } from 'http'
+import express, { Express } from 'express'
 import SpotifyWebApi from 'spotify-web-api-node'
 import oauthCredentials from '../credentials/oauth.json'
 import scopes from '../config/scopes.json'
 
-async function authenticateWithOAuth(): Promise<void> {
+interface IWebServer {
+  server: Server
+  app: Express
+}
+
+async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
   const webServer = await startWebServer()
   const OAuthClient = await createOAuthClient()
   await requestUserConsent(OAuthClient)
   const authCode = await waitForSpotifyCallback()
   await setAccessAndRefreshTokens(OAuthClient, authCode)
-  // await setGlobalSpotifyAuthentication()
-  // await stopWebServer()
+  await stopWebServer(webServer)
 
-  async function startWebServer() {
+  async function startWebServer(): Promise<IWebServer> {
     const port = 5000
     const app = express()
 
@@ -62,6 +67,18 @@ async function authenticateWithOAuth(): Promise<void> {
     OAuthClient.setAccessToken(authResponse.body.access_token)
     OAuthClient.setRefreshToken(authResponse.body.refresh_token)
   }
+
+  async function stopWebServer(webServer: IWebServer) {
+    return new Promise((resolve, reject) => {
+      webServer.server.close((err) => {
+        if (err) return reject(err)
+
+        return resolve()
+      })
+    })
+  }
+
+  return OAuthClient
 }
 
 export default authenticateWithOAuth
