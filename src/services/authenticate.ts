@@ -21,9 +21,7 @@ async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
     const port = 5000
     const app = express()
 
-    const server = app.listen(port, () => {
-      console.log(`> Listening on http://localhost:${port}`)
-    })
+    const server = app.listen(port)
 
     return { server, app }
   }
@@ -41,7 +39,7 @@ async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
   async function requestUserConsent(OAuthClient: SpotifyWebApi) {
     const authorizeUrl = OAuthClient.createAuthorizeURL(scopes, 'state')
 
-    console.log(`> Por favor, faça login: ${authorizeUrl}`)
+    console.log(`> Por favor, faça login: ${authorizeUrl}\n`)
   }
 
   async function waitForSpotifyCallback(): Promise<string> {
@@ -61,8 +59,6 @@ async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
 
   async function setAccessAndRefreshTokens(OAuthClient: SpotifyWebApi, authCode: string) {
     const authResponse = await OAuthClient.authorizationCodeGrant(authCode)
-
-    console.log('> Access token recebido\n')
 
     OAuthClient.setAccessToken(authResponse.body.access_token)
     OAuthClient.setRefreshToken(authResponse.body.refresh_token)
