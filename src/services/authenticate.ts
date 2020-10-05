@@ -1,8 +1,10 @@
 import express from 'express'
+import SpotifyWebApi from 'spotify-web-api-node'
+import * as oauthCredentials from '../credentials/oauth.json'
 
 async function authenticateWithOAuth(): Promise<void> {
   const webServer = await startWebServer()
-  // await createOAuthClient()
+  const OAuthClient = await createOAuthClient()
   // await requestUserConsent()
   // await waitForSpotifyCallback()
   // await requestSpotifyForAccessTokens()
@@ -18,6 +20,16 @@ async function authenticateWithOAuth(): Promise<void> {
     })
 
     return { server, app }
+  }
+
+  async function createOAuthClient() {
+    const OAuthClient = new SpotifyWebApi({
+      clientId: oauthCredentials.clientId,
+      clientSecret: oauthCredentials.clientSecret,
+      redirectUri: oauthCredentials.redirectUri,
+    })
+
+    return OAuthClient
   }
 }
 
