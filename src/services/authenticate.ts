@@ -1,6 +1,8 @@
 import { Server } from 'http'
 import express, { Express } from 'express'
 import SpotifyWebApi from 'spotify-web-api-node'
+import open from 'open'
+
 import oauthCredentials from '../credentials/oauth.json'
 import scopes from '../config/scopes.json'
 
@@ -40,7 +42,7 @@ async function authenticate(): Promise<SpotifyWebApi> {
   async function requestUserConsent(OAuthClient: SpotifyWebApi) {
     const authorizeUrl = OAuthClient.createAuthorizeURL(scopes, 'state')
 
-    console.log(`> Por favor, faça login: ${authorizeUrl}\n`)
+    await open(authorizeUrl)
   }
 
   async function waitForSpotifyCallback(): Promise<string> {
