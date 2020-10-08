@@ -9,12 +9,13 @@ interface IWebServer {
   app: Express
 }
 
-async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
+async function authenticate(): Promise<SpotifyWebApi> {
   const webServer = await startWebServer()
   const OAuthClient = await createOAuthClient()
   await requestUserConsent(OAuthClient)
   const authCode = await waitForSpotifyCallback()
   await setAccessAndRefreshTokens(OAuthClient, authCode)
+  await setRefreshAccessTokenTimeout(OAuthClient)
   await stopWebServer(webServer)
 
   async function startWebServer(): Promise<IWebServer> {
@@ -64,6 +65,12 @@ async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
     OAuthClient.setRefreshToken(authResponse.body.refresh_token)
   }
 
+  async function setRefreshAccessTokenTimeout(OAuthClient: SpotifyWebApi) {
+    setInterval(() => {
+      OAuthClient.refreshAccessToken()
+    }, 1000 * 60 * 30)
+  }
+
   async function stopWebServer(webServer: IWebServer) {
     return new Promise((resolve, reject) => {
       webServer.server.close((err) => {
@@ -77,4 +84,4 @@ async function authenticateWithOAuth(): Promise<SpotifyWebApi> {
   return OAuthClient
 }
 
-export default authenticateWithOAuth
+export default authenticate
