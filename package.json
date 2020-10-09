@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.8",
+    "@types/readline-sync": "^1.4.3",
     "@types/spotify-web-api-node": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
@@ -23,6 +24,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "open": "^7.3.0",
+    "readline-sync": "^1.4.10",
     "spotify-web-api-node": "^4.0.0"
   }
 }
